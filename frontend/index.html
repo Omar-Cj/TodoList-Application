@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Practice</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+
+ <!-- Login Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="loginForm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="loginModalLabel">Login</h5>
+          <button type="button" id="close-login" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="login-email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="loginEmail" required>
+          </div>
+          <div class="mb-3">
+            <label for="login-password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="loginPassword" required>
+          </div>
+          <div id="login-message"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Login</button>
+          <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#registerModal">Register</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Registration Modal -->
+<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="registrationForm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="registerModalLabel">Register</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="register-username" class="form-label">Username</label>
+            <input type="text" class="form-control" id="username" required>
+          </div>
+          <div class="mb-3">
+            <label for="register-email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" required>
+          </div>
+          <div class="mb-3">
+            <label for="register-password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" required>
+          </div>
+          <div id="message"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Register</button>
+          <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="auth-buttons" style="text-align: right; margin: 10px;">
+  <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
+  <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#registerModal">Register</button>
+  <button class="btn btn-outline-danger" id="logout-button" style="display: none;">Logout</button>
+</div>
+
+
+  <!-- Todolist data -->
+   <div class="todo-list">
+    <h1 class="todo-list__heading">Todo List Application</h1>
+    <input type="text" name="" id="search-input" class="form-control" style="width: 80%;" placeholder="Search Tasks">
+    <button class="btn btn-primary btn-sm todo-list__btn" data-bs-toggle="modal" data-bs-target="#addTaskModal">+ Add Task</button>
+    
+    <!-- Modal -->
+ <div class="modal fade" id="addTaskModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Add Task</h1>
+        <button type="button" class="btn-close close-add" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="addform-data">
+          <div class="mb-3">
+            <label for="taskname" class="form-label">Task Name</label>
+            <input type="text" class="form-control" id="taskname">
+          </div>
+          <div class="mb-3">
+            <label for="priority" class="form-label">Priority</label>
+            <select class="form-select" name="" id="priority">
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low" selected>Low</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" rows="3"></textarea>
+          </div>
+           <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary" onclick="add()">Add Task</button>
+          </div>
+        </form>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+    <!-- Modal -->
+ <div class="modal fade" id="editTaskModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Task</h1>
+        <button type="button" class="btn-close edit-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editform-data" class="editform">
+          <div class="mb-3">
+            <label for="taskname" class="form-label">Task Name</label>
+            <input type="text" class="form-control" id="edittaskname">
+          </div>
+          <div class="mb-3">
+            <label for="priority" class="form-label">Priority</label>
+            <select class="form-select" name="" id="editpriority">
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low" selected>Low</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="status" class="form-label">Status</label>
+            <select class="form-select" name="" id="editStatus">
+              <option value="Completed">Completed</option>
+              <option value="Pending" selected>Pending</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="editdescription" rows="3"></textarea>
+          </div>
+           <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Update Task</button>
+          </div>
+        </form>
+      </div>
+      
+    </div>
+  </div>
+</div>
+   <!-- TODO List Data -->
+    <table class="table table-hover todo-list__data">
+     
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Task</th>
+          <th>Priority</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="table-body">
+
+      </tbody>
+    </table>
+   </div>
+   <script src="js/bootstrap.js"></script>
+   <script src="https://kit.fontawesome.com/7ba2c65f14.js" crossorigin="anonymous"></script>
+   <script src="js/main.js"></script>
+</body>
+</html>

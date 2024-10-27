@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const searchInput = document.querySelector("#search-input");
   const registrationForm = document.querySelector("#registrationForm");
   const loginForm = document.querySelector('#loginForm');
-  const registrationContainer = document.querySelector('.registrationContainer');
+  // const registrationContainer = document.querySelector('.registrationContainer');
   const loginCloseButton = document.querySelector('#close-login');
   const todolistContainer = document.querySelector('.todo-list');
   const logoutButton = document.getElementById("logout-button");

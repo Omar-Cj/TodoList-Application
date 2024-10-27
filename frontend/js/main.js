@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   addformData.addEventListener("submit", addTasks);
 
-  async function addTasks(event) {
+   function addTasks(event) {
     event.preventDefault();
 
     if (taskNameField.value === "" || priorityField.value === "" || descriptionField.value === "") {
@@ -215,7 +215,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  async function editTask(id) {
+   function editTask(id) {
     const url = `http://127.0.0.1:5000/tasks/${id}`;
     const token = localStorage.getItem('token');
 
@@ -277,7 +277,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  async function deleteTask(id) {
+   function deleteTask(id) {
     const url = `http://127.0.0.1:5000/tasks/${id}`;
     const token = localStorage.getItem('token');
 

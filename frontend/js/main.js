@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
   const addformData = document.querySelector("#addform-data");
-  const editformData = document.querySelector("#editform-data");
+  let editformData = document.querySelector("#editform-data");
   const taskNameField = document.querySelector("#taskname");
   const priorityField = document.querySelector("#priority");
   const descriptionField = document.querySelector("#description");
@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   addformData.addEventListener("submit", addTasks);
 
-   function addTasks(event) {
+  async function addTasks(event) {
     event.preventDefault();
 
     if (taskNameField.value === "" || priorityField.value === "" || descriptionField.value === "") {
@@ -215,69 +215,62 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-   function editTask(id) {
+  async function editTask(id) {
     const url = `http://127.0.0.1:5000/tasks/${id}`;
     const token = localStorage.getItem('token');
 
+    // Fetch task details to populate the edit form
     axios.get(url, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
     })
     .then(response => {
-      let task = response.data;
-
-      let editTaskName = document.querySelector("#edittaskname");
-      let editPriority = document.querySelector("#editpriority");
-      let editDescription = document.querySelector("#editdescription");
-      let editStatus = document.querySelector("#editStatus");
-  
-      editTaskName.value = task.task_name;
-      editPriority.value = task.priority;
-      editDescription.value = task.description;
-      editStatus.value = task.status;
+      const task = response.data;
+      document.querySelector("#edittaskname").value = task.task_name;
+      document.querySelector("#editpriority").value = task.priority;
+      document.querySelector("#editdescription").value = task.description;
+      document.querySelector("#editStatus").value = task.status;
     })
-    .catch(error => {
-      console.error('Error', error);
-    });
+    .catch(error => console.error('Error', error));
 
+    // Remove previous submit event listener if any
+    (function clearPreviousListeners() {
+      const newEditForm = editformData.cloneNode(true);
+      editformData.parentNode.replaceChild(newEditForm, editformData);
+      editformData = newEditForm;
+    })();
+
+    // Add submit event listener for updating the task
     editformData.addEventListener("submit", function (event) {
       event.preventDefault();
 
-      let editTaskName = document.querySelector("#edittaskname");
-      let editPriority = document.querySelector("#editpriority");
-      let editDescription = document.querySelector("#editdescription");
-      let editStatus = document.querySelector('#editStatus');
-
       const url = `http://127.0.0.1:5000/tasks/${id}`;
       const token = localStorage.getItem('token');
-
-      let data = JSON.stringify({
-        task_name: editTaskName.value,
-        priority: editPriority.value,
-        description: editDescription.value,
-        status: editStatus.value
+      const data = JSON.stringify({
+        task_name: document.querySelector("#edittaskname").value,
+        priority: document.querySelector("#editpriority").value,
+        description: document.querySelector("#editdescription").value,
+        status: document.querySelector("#editStatus").value
       });
 
-      axios.put(url, data,{
+      axios.put(url, data, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       })
       .then(response => {
-        if(response.status === 200) {
-
-          let closeEditBtn = document.querySelector('.edit-close');
-          closeEditBtn.click()
-          getTasks()
+        if (response.status === 200) {
+          document.querySelector('.edit-close').click();
+          getTasks(); // Refresh tasks
         }
-      }) // Refresh tasks after edit
+      })
       .catch(error => console.error('Error', error));
     });
   }
 
-   function deleteTask(id) {
+  async function deleteTask(id) {
     const url = `http://127.0.0.1:5000/tasks/${id}`;
     const token = localStorage.getItem('token');
 

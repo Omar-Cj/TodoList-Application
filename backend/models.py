@@ -36,3 +36,4 @@ class Task(db.Model):
              "status": self.status,
              "description": self.description
         }
+
